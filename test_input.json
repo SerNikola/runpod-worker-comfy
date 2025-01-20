@@ -1,0 +1,248 @@
+{
+  "input": {
+    "workflow": {
+      "1": {
+        "inputs": {
+          "unet_name": "flux1-dev.safetensors",
+          "weight_dtype": "fp8_e4m3fn"
+        },
+        "class_type": "UNETLoader",
+        "_meta": {
+          "title": "Load Diffusion Model"
+        }
+      },
+      "2": {
+        "inputs": {
+          "clip_name1": "google_t5-v1_1-xxl_encoderonly-fp8_e4m3fn.safetensors",
+          "clip_name2": "ViT-L-14-TEXT-detail-improved-hiT-GmP-HF.safetensors",
+          "type": "flux"
+        },
+        "class_type": "DualCLIPLoader",
+        "_meta": {
+          "title": "DualCLIPLoader"
+        }
+      },
+      "3": {
+        "inputs": {
+          "vae_name": "flux_ae.safetensors"
+        },
+        "class_type": "VAELoader",
+        "_meta": {
+          "title": "Load VAE"
+        }
+      },
+      "6": {
+        "inputs": {
+          "width": [
+            "9",
+            0
+          ],
+          "height": [
+            "10",
+            0
+          ],
+          "batch_size": 1
+        },
+        "class_type": "EmptyLatentImage",
+        "_meta": {
+          "title": "Empty Latent Image"
+        }
+      },
+      "7": {
+        "inputs": {
+          "lora_name": "Eldritch_Comics_for_Flux_1.1.safetensors",
+          "strength_model": 0.97,
+          "strength_clip": 0.97,
+          "model": [
+            "1",
+            0
+          ],
+          "clip": [
+            "2",
+            0
+          ]
+        },
+        "class_type": "LoraLoader",
+        "_meta": {
+          "title": "Load LoRA"
+        }
+      },
+      "8": {
+        "inputs": {
+          "max_shift": 1.15,
+          "base_shift": 0.5,
+          "width": [
+            "9",
+            0
+          ],
+          "height": [
+            "10",
+            0
+          ],
+          "model": [
+            "7",
+            0
+          ]
+        },
+        "class_type": "ModelSamplingFlux",
+        "_meta": {
+          "title": "ModelSamplingFlux"
+        }
+      },
+      "9": {
+        "inputs": {
+          "int": 1024
+        },
+        "class_type": "Int Literal",
+        "_meta": {
+          "title": "Width"
+        }
+      },
+      "10": {
+        "inputs": {
+          "int": 1024
+        },
+        "class_type": "Int Literal",
+        "_meta": {
+          "title": "Height"
+        }
+      },
+      "14": {
+        "inputs": {
+          "string": "Bible verse on a papyrus, the verse says the following words: \"thou that borrows, thou shall return without waiting - street 127: 8-1\""
+        },
+        "class_type": "String Literal",
+        "_meta": {
+          "title": "Prompt"
+        }
+      },
+      "22": {
+        "inputs": {
+          "model": [
+            "8",
+            0
+          ],
+          "conditioning": [
+            "34",
+            0
+          ]
+        },
+        "class_type": "BasicGuider",
+        "_meta": {
+          "title": "BasicGuider"
+        }
+      },
+      "23": {
+        "inputs": {
+          "scheduler": "beta",
+          "steps": 25,
+          "denoise": 1,
+          "model": [
+            "8",
+            0
+          ]
+        },
+        "class_type": "BasicScheduler",
+        "_meta": {
+          "title": "BasicScheduler"
+        }
+      },
+      "24": {
+        "inputs": {
+          "sampler_name": "euler"
+        },
+        "class_type": "KSamplerSelect",
+        "_meta": {
+          "title": "KSamplerSelect"
+        }
+      },
+      "25": {
+        "inputs": {
+          "noise_seed": 706037200541935
+        },
+        "class_type": "RandomNoise",
+        "_meta": {
+          "title": "RandomNoise"
+        }
+      },
+      "26": {
+        "inputs": {
+          "noise": [
+            "25",
+            0
+          ],
+          "guider": [
+            "22",
+            0
+          ],
+          "sampler": [
+            "24",
+            0
+          ],
+          "sigmas": [
+            "23",
+            0
+          ],
+          "latent_image": [
+            "6",
+            0
+          ]
+        },
+        "class_type": "SamplerCustomAdvanced",
+        "_meta": {
+          "title": "SamplerCustomAdvanced"
+        }
+      },
+      "27": {
+        "inputs": {
+          "samples": [
+            "26",
+            1
+          ],
+          "vae": [
+            "3",
+            0
+          ]
+        },
+        "class_type": "VAEDecode",
+        "_meta": {
+          "title": "VAE Decode"
+        }
+      },
+      "30": {
+        "inputs": {
+          "filename_prefix": "ComfyUI",
+          "images": [
+            "27",
+            0
+          ]
+        },
+        "class_type": "SaveImage",
+        "_meta": {
+          "title": "Save Image"
+        }
+      },
+      "34": {
+        "inputs": {
+          "clip_l": [
+            "14",
+            0
+          ],
+          "t5xxl": [
+            "14",
+            0
+          ],
+          "guidance": 3.5,
+          "clip": [
+            "7",
+            1
+          ]
+        },
+        "class_type": "CLIPTextEncodeFlux",
+        "_meta": {
+          "title": "CLIPTextEncodeFlux"
+        }
+      }
+    }
+  }
+}
